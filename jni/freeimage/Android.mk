@@ -30,8 +30,29 @@ LOCAL_C_INCLUDES   := $(LOCAL_PATH)/Source \
                         $(LOCAL_PATH)/Source/OpenEXR/IlmThread \
                         $(LOCAL_PATH)/Source/OpenEXR/Imath \
 												$(LOCAL_PATH)/Source/ZLib
-LOCAL_SRC_FILES    := $(SRCS)
-LOCAL_ADDITIONAL_FLAGS := -O3 -fPIC -DNO_LCMS -D__ANSI__ -DDISABLE_PERF_MEASUREMENT
-LOCAL_CPPFLAGS := $(LOCAL_ADDITIONAL_FLAGS) -std=c++98 -frtti -fexceptions
-LOCAL_CFLAGS       := $(LOCAL_ADDITIONAL_FLAGS)
+
+ifneq ($(findstring armeabi-v7a, $(TARGET_ARCH_ABI)),)
+  # Setting LOCAL_ARM_NEON will enable -mfpu=neon which may cause illegal
+  # instructions to be generated for armv7a code. Instead target the neon code
+  # specifically.
+  NEON           := c.neon
+	LOCAL_ARM_NEON := true
+else
+  NEON := c
+endif
+
+LOCAL_NEON_SRC         := $(LOCAL_PATH)/Source/LibWebP/./src/dsp/dsp.dec_neon.$(NEON) \
+													$(LOCAL_PATH)/Source/LibWebP/./src/dsp/dsp.enc_neon.$(NEON) \
+													$(LOCAL_PATH)/Source/LibWebP/./src/dsp/dsp.lossless_neon.$(NEON) \
+													$(LOCAL_PATH)/Source/LibWebP/./src/dsp/dsp.upsampling_neon.$(NEON)
+
+$(SRCS) += $(LOCAL_NEON_SRC)
+LOCAL_SRC_FILES        := $(SRCS)
+LOCAL_ADDITIONAL_FLAGS := -O3 -fPIC -D__ANSI__ -DDISABLE_PERF_MEASUREMENT -DHAVE_MALLOC_H -DHAVE_PTHREAD -DWEBP_USE_THREAD
+LOCAL_CPPFLAGS         := $(LOCAL_ADDITIONAL_FLAGS) -std=c++11 -frtti -fexceptions
+LOCAL_CFLAGS           := $(LOCAL_ADDITIONAL_FLAGS)
+LOCAL_ARM_MODE         := arm
+LOCAL_STATIC_LIBRARIES := cpufeatures
 include $(BUILD_STATIC_LIBRARY)
+
+$(call import-module,android/cpufeatures)

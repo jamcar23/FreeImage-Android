@@ -21,7 +21,7 @@
 #define HAVE_IO_H 1
 
 /* Define to 1 if you have the <search.h> header file. */
-#define HAVE_SEARCH_H 1
+// #define HAVE_SEARCH_H 1
 
 /* Define to 1 if you have the `setmode' function. */
 #define HAVE_SETMODE 1
@@ -50,7 +50,7 @@
 /* Signed size type formatter */
 #define TIFF_SSIZE_FORMAT "%ld"
 
-/* 
+/*
 -----------------------------------------------------------------------
 Byte order
 -----------------------------------------------------------------------

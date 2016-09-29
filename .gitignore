@@ -28,5 +28,9 @@
 *.out
 *.app
 
+# Folders
+libs/
+obj/
+
 # OS Files
 .DS_Store

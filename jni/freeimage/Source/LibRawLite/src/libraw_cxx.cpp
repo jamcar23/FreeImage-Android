@@ -26,6 +26,7 @@ it under the terms of the one of three licenses as you choose:
 #include <exception>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <swab.h>
 #ifndef WIN32
 #include <netinet/in.h>
 #else
@@ -4530,4 +4531,3 @@ end:
   if(raise_error)
     throw LIBRAW_EXCEPTION_IO_CORRUPT;
 }
-
